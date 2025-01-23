@@ -51,11 +51,11 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 else
     echo "SSH key already exists. Skipping key generation."
 fi
-sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "mkdir -p ~/.ssh && cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
+# sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "mkdir -p ~/.ssh && cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
 
 # File transfers
-scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/wordpress/ /opt/
-scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/conf.d/ /opt/
+sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/wordpress/ /opt/
+sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/conf.d/ /opt/
 
 # Start WordPress
 cd /opt/wordpress/
@@ -63,7 +63,7 @@ docker compose up -d
 
 # Configure HAProxy
 service haproxy start
-scp -o StrictHostKeyChecking=no -P $SSH_PORT root@$SSH_HOST:/etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
+sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -P $SSH_PORT root@$SSH_HOST:/etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
 service haproxy restart
 docker ps
 
@@ -72,11 +72,11 @@ sed -i 's/#Port 22/Port '$SSH_PORT'/g' /etc/ssh/sshd_config
 service sshd restart
 
 # Setup Outline VPN
-scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/outline/ /opt/
+sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/outline/ /opt/
 rm -rf /opt/outline/access.txt 
 wget https://raw.githubusercontent.com/Jigsaw-Code/outline-server/master/src/server_manager/install_scripts/install_server.sh
 chmod 755 install_server.sh
 ./install_server.sh --keys-port 443 --api-port 2083
 
 # Configure networking
-scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/etc/sysconfig/network-scripts/ifcfg-eth0:1 /etc/sysconfig/network-scripts/ifcfg-eth0:1
+sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/etc/sysconfig/network-scripts/ifcfg-eth0:1 /etc/sysconfig/network-scripts/ifcfg-eth0:1
