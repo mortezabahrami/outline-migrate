@@ -46,7 +46,11 @@ systemctl start docker
 docker ps
 
 # SSH Key Generation
-ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa -q
+if [ ! -f ~/.ssh/id_rsa ]; then
+    ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa -q
+else
+    echo "SSH key already exists. Skipping key generation."
+fi
 sshpass -p "$SSH_PASS" ssh-copy-id -i ~/.ssh/id_rsa.pub -p $SSH_PORT $SSH_USER@$SSH_HOST
 
 # File transfers
@@ -76,6 +80,3 @@ chmod 755 install_server.sh
 
 # Configure networking
 scp -r -P $SSH_PORT root@$SSH_HOST:/etc/sysconfig/network-scripts/ifcfg-eth0:1 /etc/sysconfig/network-scripts/ifcfg-eth0:1
-
-# Finalize and reboot
-reboot
