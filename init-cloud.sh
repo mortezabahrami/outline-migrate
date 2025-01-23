@@ -33,7 +33,7 @@ firewall-cmd --reload
 
 # Install Speedtest CLI
 curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash
-yum -y install speedtest
+yum -y install speedtest sshpass
 
 # Install Docker
 yum install -y yum-utils
