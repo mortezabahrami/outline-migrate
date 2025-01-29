@@ -89,7 +89,7 @@ chmod 755 install_server.sh
 
 echo "Installed outline-server" >> /root/setup.log
 # Configure networking
-sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/etc/sysconfig/network-scripts/ifcfg-eth0:1 /etc/sysconfig/network-scripts/ifcfg-eth0:1
+sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/etc/sysconfig/network-scripts/ifcfg-eth0\:1 /etc/sysconfig/network-scripts/ifcfg-eth0\:1
 
 # Extract IPADDR value
 IPADDR=$(grep -oP 'IPADDR=\K[0-9.]*' /etc/sysconfig/network-scripts/ifcfg-eth0:1)
