@@ -52,11 +52,11 @@ docker ps
 echo "Installed docker" >> /root/setup.log
 
 # SSH Key Generation
-if [ ! -f ~/.ssh/id_rsa ]; then
-    ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa -q
-else
-    echo "SSH key already exists. Skipping key generation."
-fi
+#if [ ! -f ~/.ssh/id_rsa ]; then
+#    ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa -q
+#else
+#    echo "SSH key already exists. Skipping key generation."
+#fi
 # sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "mkdir -p ~/.ssh && cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
 
 # File transfers
