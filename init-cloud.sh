@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Exit immediately if a command exits with a non-zero status
+set +e  # Exit immediately if a command exits with a non-zero status
 
 # Variables (replace with actual values or pass via cloud-init)
 SSH_USER=$1
