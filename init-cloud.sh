@@ -97,4 +97,27 @@ IPADDR=$(grep -oP 'IPADDR=\K[0-9.]*' /etc/sysconfig/network-scripts/ifcfg-eth0:1
 # Use the extracted IPADDR in the ip command
 ip addr add $IPADDR dev eth0
 
+
+URL="https://gemini.google.com/"
+
+# Perform curl request and store the response
+response=$(curl -s -w "%%{http_code}" "$URL")
+
+# Extract the HTTP status code (last 3 digits of the response)
+http_code="${response: -3}"
+
+# Extract the body content (excluding the last 3 digits)
+body="${response::-3}"
+
+# Initialize isBlocked flag
+isBlocked=false
+
+# Check if HTTP status code is in the 400 range or if the phrase exists in the body
+if [[ "$http_code" =~ ^4[0-9][0-9]$ ]] || [[ "$body" == *"Gemini isn’t currently supported in your country"* ]]; then
+    isBlocked=true
+fi
+
+# Print the result
+echo "isBlocked: $isBlocked"  >> /root/setup.log
+
 echo "All done." >> /root/setup.log
