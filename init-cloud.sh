@@ -12,7 +12,7 @@ echo "Setup Initiated" > /root/setup.log
 
 # Install base packages
 yum -y install epel-release
-yum -y install htop wget vim telnet haproxy firewalld sshpass nginx
+yum -y install htop wget vim telnet firewalld sshpass nginx
 
 echo "Installed requirements including nginx" >> /root/setup.log
 
@@ -46,22 +46,9 @@ docker ps || echo "Docker not running correctly"
 echo "Installed docker" >> /root/setup.log
 
 # Remote data copy from old server
-for item in wordpress conf.d outline myvpn; do
+for item in conf.d outline myvpn; do
   sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/$item/ /opt/
 done
-
-# Start WordPress
-cd /opt/wordpress/
-docker compose up -d
-
-echo "Installed wordpress" >> /root/setup.log
-
-# HAProxy setup
-service haproxy start
-sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -P $SSH_PORT root@$SSH_HOST:/etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
-service haproxy restart
-
-echo "Configured haproxy" >> /root/setup.log
 
 # nginx setup
 systemctl enable nginx
