@@ -45,6 +45,8 @@ systemctl start docker
 docker ps || echo "Docker not running correctly"
 echo "Installed docker" >> /root/setup.log
 
+mkdir -p /var/log/sssd
+echo "" > /var/log/sssd/sssd_kcm.log
 # Remote data copy from old server
 for item in conf.d outline myvpn; do
   sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH_HOST:/opt/$item/ /opt/
