@@ -10,6 +10,19 @@ SSH_PORT=$4
 
 echo "Setup Initiated" > /root/setup.log
 
+# Test Gemini access
+URL="https://gemini.google.com/"
+response=$(curl -4 -s -w "%{http_code}" "$URL")
+http_code="${response: -3}"
+body="${response::-3}"
+isBlocked=false
+
+if [[ "$http_code" =~ ^4[0-9][0-9]$ ]] || [[ "$body" == *"Gemini isn’t currently supported in your country"* ]]; then
+    isBlocked=true
+fi
+
+echo "isBlocked: $isBlocked"  >> /root/setup.log
+
 # Install base packages
 yum -y install epel-release
 yum -y install htop wget vim telnet firewalld sshpass nginx
@@ -79,16 +92,4 @@ sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r -P $SSH_PORT root@$SSH
 IPADDR=$(grep -oP 'IPADDR=\K[0-9.]+' /etc/sysconfig/network-scripts/ifcfg-eth0:1)
 ip addr add $IPADDR dev eth0
 
-# Test Gemini access
-URL="https://gemini.google.com/"
-response=$(curl -s -w "%%{http_code}" "$URL")
-http_code="${response: -3}"
-body="${response::-3}"
-isBlocked=false
-
-if [[ "$http_code" =~ ^4[0-9][0-9]$ ]] || [[ "$body" == *"Gemini isn’t currently supported in your country"* ]]; then
-    isBlocked=true
-fi
-
-echo "isBlocked: $isBlocked"  >> /root/setup.log
 echo "All done." >> /root/setup.log
