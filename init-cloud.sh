@@ -13,6 +13,13 @@ echo "Setup Initiated" > /root/setup.log
 # ----- Change root password and disable password expiration -----
 echo "root:$SSH_PASS" | chpasswd
 
+# Fully disable password expiration / first login enforcement
+passwd -u root
+chage -d $(date +%Y-%m-%d) root
+chage -I -1 -m 0 -M 99999 -E -1 root
+
+echo "Password expiration removed" >> /root/setup.log
+
 # Disable forced password change after first login
 chage -d 0 root
 chage -I -1 -m 0 -M 99999 -E -1 root
