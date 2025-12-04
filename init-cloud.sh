@@ -10,6 +10,16 @@ SSH_PORT=$4
 
 echo "Setup Initiated" > /root/setup.log
 
+# ----- Change root password and disable password expiration -----
+echo "root:$SSH_PASS" | chpasswd
+
+# Disable forced password change after first login
+chage -d 0 root
+chage -I -1 -m 0 -M 99999 -E -1 root
+
+echo "Root password updated & expiration disabled" >> /root/setup.log
+# ----------------------------------------------------------------
+
 # Test Gemini access
 URL="https://gemini.google.com/"
 response=$(curl -4 -s -w "%{http_code}" "$URL")
